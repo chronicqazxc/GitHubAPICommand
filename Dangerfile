@@ -7,8 +7,8 @@ warn("No CHANGELOG changes made") if git.lines_of_code > 50 && !git.modified_fil
 
 # Add a CHANGELOG entry for app changes
 if !git.modified_files.include?("CHANGELOG.md") && has_app_changes
-fail("Please include a CHANGELOG entry.")
-message "Note, we hard-wrap at 80 chars and use 2 spaces after the last line."
+    fail("Please include a CHANGELOG entry.")
+    message "Note, we hard-wrap at 80 chars and use 2 spaces after the last line."
 end
 
 # Sometimes it's a README fix, or something like that - which isn't relevant for
@@ -23,5 +23,5 @@ warn("Big PR") if git.lines_of_code > 500
 
 # Warn summary on pull request
 if github.pr_body.length < 5
-warn "Please provide a summary in the Pull Request description"
+    warn "Please provide a summary in the Pull Request description"
 end
