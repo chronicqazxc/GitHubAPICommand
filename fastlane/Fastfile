@@ -13,11 +13,86 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
-default_platform(:ios)
+default_platform(:mac)
 
 platform :ios do
-  desc "Description of what the lane does"
-  lane :custom_lane do
-    # add actions here: https://docs.fastlane.tools/actions
-  end
+    before_all do
+        brew(command:"upgrade swiftlint")
+    end
+
+    desc "Perform local test"
+    lane :local do
+        swiftlint(
+            mode: :lint,      # SwiftLint mode: :lint (default) or :autocorrect
+            output_file: "swiftlint.result.json", # The path of the output file (optional)
+            ignore_exit_status: true    # Allow fastlane to continue even if SwiftLint returns a non-zero exit status
+        )
+        spm(
+            command: "update"
+        )
+        spm(
+            command: "test"
+        )
+    end
+
+    desc "Perform test on CICD"
+    lane :cicd do
+        danger(
+            dangerfile: "Dangerfile",
+            verbose: true
+        )
+
+        swiftlint(
+            mode: :lint,      # SwiftLint mode: :lint (default) or :autocorrect
+            output_file: "swiftlint.result.json", # The path of the output file (optional)
+            ignore_exit_status: true    # Allow fastlane to continue even   if SwiftLint returns a non-zero exit status
+        )
+        spm(
+            command: "update"
+        )
+        spm(
+            command: "test"
+        )
+    end
+end
+
+platform :mac do
+    before_all do
+        brew(command:"upgrade swiftlint")
+    end
+
+    desc "Perform local test"
+    lane :local do
+        swiftlint(
+            mode: :lint,      # SwiftLint mode: :lint (default) or :autocorrect
+            output_file: "swiftlint.result.json", # The path of the output file (optional)
+            ignore_exit_status: true    # Allow fastlane to continue even if SwiftLint returns a non-zero exit status
+        )
+        spm(
+            command: "update"
+        )
+        spm(
+            command: "test"
+        )
+    end
+
+    desc "Perform test on CICD"
+    lane :cicd do
+        danger(
+            dangerfile: "Dangerfile",
+            verbose: true
+        )
+        brew(command:"install swiftlint")
+        swiftlint(
+            mode: :lint,      # SwiftLint mode: :lint (default) or :autocorrect
+            output_file: "swiftlint.result.json", # The path of the output file (optional)
+            ignore_exit_status: true    # Allow fastlane to continue even   if SwiftLint returns a non-zero exit status
+        )
+        spm(
+            command: "update"
+        )
+        spm(
+            command: "test"
+        )
+    end
 end
