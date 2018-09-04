@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "ObjectMapper",
+        "repositoryURL": "https://github.com/Hearst-DD/ObjectMapper.git",
+        "state": {
+          "branch": null,
+          "revision": "b35a6c38c20ba1c6fd396fef535ad0f856d56714",
+          "version": "2.2.6"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

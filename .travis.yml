@@ -1,0 +1,14 @@
+bundler_args: "--path vendor/bundle"
+before_install:
+- git fetch --depth=1000000
+- gem install bundler
+after_install:
+- bundle update
+os:
+- osx
+osx_image:
+- xcode10
+language:
+- swift
+script:
+- bundle exec fastlane test
