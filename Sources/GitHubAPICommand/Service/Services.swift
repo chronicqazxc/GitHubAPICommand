@@ -1,5 +1,5 @@
 //
-//  Service.swift
+//  Services.swift
 //  GitHubAPICommand
 //
 //  Created by Wayne Hsiao on 2018/9/6.
@@ -8,17 +8,43 @@
 import Foundation
 import ObjectMapper
 
-typealias CompletionHandler = (GitHubAPIResponse?, URLResponse?, Error?)->Void
-typealias NetworkCompletionHandler = (Data?, URLResponse?, Error?)->Void
-typealias GetAccessTokenCompletionHandler = (Data?, URLResponse?, Error?)->Void
+public typealias CompletionHandler = (GitHubAPIResponse?, URLResponse?, Error?)->Void
+public typealias NetworkCompletionHandler = (Data?, URLResponse?, Error?) -> Swift.Void
+public typealias GetAccessTokenCompletionHandler = (Data?, URLResponse?, Error?)->Void
 
-class Service {
-    static let shared = Service()
+public protocol URLRequestProtocol {
+    var url: URL? { get set }
+}
+
+public protocol URLSessionProtocol {
+    func dataTask(with request: URLRequestProtocol,
+                  completionHandler: @escaping NetworkCompletionHandler) -> URLSessionDataTaskProtocol
+}
+
+public protocol URLSessionDataTaskProtocol {
+    func resume()
+}
+
+extension URLSession: URLSessionProtocol {
+    public func dataTask(with request: URLRequestProtocol, completionHandler: @escaping NetworkCompletionHandler) -> URLSessionDataTaskProtocol {
+        return dataTask(with: request, completionHandler: completionHandler)
+    }
+    
+}
+extension URLSessionDataTask: URLSessionDataTaskProtocol {
+}
+
+extension URLRequest: URLRequestProtocol {
+    
+}
+
+public class Services {
     
     fileprivate var accessToken: GitHubAccessToken?
+    let session: URLSessionProtocol
     
-    fileprivate init() {
-        
+    public init(session: URLSessionProtocol = URLSession.shared) {
+        self.session = session
     }
     
     func post(url: URL,
@@ -26,9 +52,10 @@ class Service {
               body: [AnyHashable:Any]? = nil,
               overrideHeader: [String:String]? = nil,
               completionHandler: @escaping NetworkCompletionHandler) {
-        getAccessToken(request: request) { (data, response, error) in
+        getAccessToken(request: request) { [weak self] (data, response, error) in
             
-            guard let accessToken = self.accessToken?.token,
+            guard let strongSelf = self,
+                let accessToken = strongSelf.accessToken?.token,
                 let body = body else {
                     completionHandler(nil, response, GitHubAPIError.BearerTokenExpiredError)
                     return
@@ -46,7 +73,7 @@ class Service {
                 request.addValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
                 request.addValue("application/vnd.github.machine-man-preview+json", forHTTPHeaderField: "Accept")
                 
-                let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                let task = strongSelf.session.dataTask(with: request) { (data, response, error) in
                     completionHandler(data, response, error)
                 }
                 
@@ -62,9 +89,10 @@ class Service {
              url: URL,
              overrideHeader: [String:String]? = nil,
              completionHandler: @escaping NetworkCompletionHandler) {
-        getAccessToken(request: request) { (data, response, error) in
+        getAccessToken(request: request) { [weak self] (data, response, error) in
             
-            guard let accessToken = self.accessToken?.token else {
+            guard let strongSelf = self,
+                let accessToken = strongSelf.accessToken?.token else {
                 completionHandler(nil, response, GitHubAPIError.BearerTokenExpiredError)
                 return
             }
@@ -77,7 +105,7 @@ class Service {
             request.addValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
             request.addValue("application/vnd.github.machine-man-preview+json", forHTTPHeaderField: "Accept")
             
-            let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            let task = strongSelf.session.dataTask(with: request) { (data, response, error) in
                 completionHandler(data, response, error)
             }
             task.resume()
@@ -121,7 +149,7 @@ class Service {
             request.addValue(arg.element.value, forHTTPHeaderField: arg.element.key)
         })
         
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        let task = session.dataTask(with: request) { (data, response, error) in
             guard let data = data,
                 let jsonDic = JSONParser(data: data).parsedDictionary else {
                     completionHandler(nil, response, error)
@@ -139,8 +167,4 @@ class Service {
         
         task.resume()
     }
-}
-
-extension Service {
-    
 }
