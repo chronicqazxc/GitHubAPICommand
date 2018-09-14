@@ -112,6 +112,16 @@ public class Services {
         }
     }
     
+    func host(request: GitHubAPIRequest) -> Host {
+        var host: Host!
+        if let hostValue = request.host?.value {
+            host = .enterprise(host: hostValue)
+        } else {
+            host = .github
+        }
+        return host
+    }
+    
     fileprivate func getAccessToken(request: GitHubAPIRequest,
                                     completionHandler: @escaping GetAccessTokenCompletionHandler) {
         /*
@@ -121,22 +131,16 @@ public class Services {
          https://api.github.com/app/installations/:installation_id/access_tokens
          */
         guard let bearerToken = request.token?.value,
-            let _ = request.orginization?.value,
-            let _ = request.repository?.value,
             let installationId = request.installationID?.value else {
                 completionHandler(nil, nil, GitHubAPIError.ParameterError)
                 return
         }
         
         var endpoint: EndpointFactory!
-        let getAccessToken = EndpointFactory.GetAccessToken.parameter(installationId: installationId)
-        if let host = request.host?.value {
-            endpoint = EndpointFactory.getAccessTokenUrl(host: .enterprise(host: host),
-                                                         getAccessToken: getAccessToken)
-        } else {
-            endpoint = EndpointFactory.getAccessTokenUrl(host: .github,
-                                                         getAccessToken: getAccessToken)
-        }
+
+        let getAccessToken = EndpointFactory.GetAccessToken(host: host(request: request),
+                                                            installationId: installationId)
+        endpoint = EndpointFactory.endpoint(getAccessToken)
         
         let overrideHeader = [
             "Authorization" : "Bearer \(bearerToken)",

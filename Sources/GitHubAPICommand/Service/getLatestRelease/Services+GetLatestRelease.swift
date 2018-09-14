@@ -17,20 +17,13 @@ extension Services {
                 completionHandler(nil, nil, GitHubAPIError.ParameterError)
                 return
         }
-        
-        var url: URL!
-        if let host = request.host?.value {
-            let endpoint = EndpointFactory.url(host: .enterprise(host: host),
-                                               orginization: orginization,
-                                               repository: repository,
-                                               endpoint: EndpointFactory.GetLatestRelease.init)
-            url = URL(string: endpoint.url)
-        } else {
-            let endpoint = EndpointFactory.url(host: .github,
-                                               orginization: orginization,
-                                               repository: repository,
-                                               endpoint: EndpointFactory.GetLatestRelease.init)
-            url = URL(string: endpoint.url)
+
+        let endpoint = EndpointFactory.GetLatestRelease(host: host(request: request),
+                                                        orginization: orginization,
+                                                        repository: repository)
+        guard let url = URL(string: endpoint.url) else {
+            completionHandler(nil, nil, GitHubAPIError.ParameterError)
+            return
         }
         
         get(request: request, url: url) { (data, response, error) in

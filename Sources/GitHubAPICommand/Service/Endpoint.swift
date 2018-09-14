@@ -8,56 +8,55 @@
 import Foundation
 
 public protocol Endpoint {
-    func url(endpoint: EndpointFactory) throws -> String
     var httpMethod: String { get }
+    var host: Host { get }
+    var orginization: String { get }
+    var repository: String { get }
+    var url: String { get }
+    init(host: Host,
+         orginization: String,
+         repository: String)
 }
 
 public enum EndpointFactory {
     // https://developer.github.com/v3/apps/available-endpoints/
     // https://developer.github.com/enterprise/2.13/v3/apps/available-endpoints/
-    case getAccessTokenUrl(host: Host, getAccessToken: GetAccessToken)
-    case url(host: Host,
-        orginization: String,
-        repository: String,
-        endpoint: Endpoint)
+    case endpoint(Endpoint)
     
-    public var httpMethod: String {
-        switch self {
-        case let .url(_, _, _, endpointable):
-            return endpointable.httpMethod
-        case let .getAccessTokenUrl(_, getAccessToken):
-            return getAccessToken.httpMethod
-        }
-    }
-    
-    public var url: String {
+    var endpoint: Endpoint {
         get {
             switch self {
-            case let .url(_, _, _, endpointable):
-                return (try? endpointable.url(endpoint: self)) ?? ""
-            case let .getAccessTokenUrl(_, getAccessToken):
-                return (try? getAccessToken.url(endpoint: self)) ?? ""
+            case let .endpoint(endpoint):
+                return endpoint
             }
         }
     }
     
-    public enum GetAccessToken: Endpoint {
-        case parameter(installationId: String)
+    public var httpMethod: String {
+        return endpoint.httpMethod
+    }
+    
+    public var url: String {
+        return endpoint.url
+    }
+}
+
+extension EndpointFactory {
+    struct GetAccessToken: Endpoint {
+        public var host: Host
         
-        public func url(endpoint: EndpointFactory) throws -> String {
-            switch self {
-            case let .parameter(installationId):
-                switch endpoint {
-                case .url:
-                    throw GitHubEndpointError.invalidGitHubEndpoint(endpoint: endpoint)
-                case let .getAccessTokenUrl(host, _):
-                    switch host {
-                    case .github:
-                        return "\(host.value)/app/installations/\(installationId)/access_tokens"
-                    case .enterprise:
-                        return "\(host.value)/api/v3/installations/\(installationId)/access_tokens"
-                    }
-                }
+        public var orginization: String
+        
+        public var repository: String
+        
+        public var installationId: String
+        
+        public var url: String {
+            switch host {
+            case .github:
+                return "\(host.value)/app/installations/\(installationId)/access_tokens"
+            case .enterprise:
+                return "\(host.value)/api/v3/installations/\(installationId)/access_tokens"
             }
         }
         
@@ -65,6 +64,23 @@ public enum EndpointFactory {
             get {
                 return "POST"
             }
+        }
+        
+        public init(host: Host,
+                    installationId: String) {
+            self.host = host
+            self.orginization = ""
+            self.repository = ""
+            self.installationId = installationId
+        }
+        
+        public init(host: Host,
+                    orginization: String,
+                    repository: String) {
+            self.host = host
+            self.orginization = orginization
+            self.repository = repository
+            self.installationId = ""
         }
     }
 }

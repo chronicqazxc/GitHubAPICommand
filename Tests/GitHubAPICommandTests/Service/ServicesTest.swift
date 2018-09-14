@@ -22,7 +22,20 @@ class ServicesTests: XCTestCase {
             return
         }
         services.get(request: request, url: url) { (data, response, error) in
-            XCTAssertEqual(url.absoluteString, "http://www.google.com")
+            XCTAssertEqual(self.session.url?.absoluteString, "http://www.google.com")
+        }
+    }
+    
+    func testServicesResumeWasCalled() {
+        let services = Services(session: session)
+        
+        let request = GitHubAPIRequest.init(arguments: arguments)
+        guard let url = URL(string: "http://www.google.com") else {
+            XCTAssert(false, "url shouldn't be nil")
+            return
+        }
+        services.get(request: request, url: url) { (data, response, error) in
+            XCTAssertTrue(self.session.dataTask.resumeWasCalled)
         }
     }
     
