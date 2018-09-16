@@ -48,7 +48,7 @@ public class Services {
     }
     
     func post(url: URL,
-              request: GitHubAPIRequest,
+              request: Request,
               body: [AnyHashable:Any]? = nil,
               overrideHeader: [String:String]? = nil,
               completionHandler: @escaping NetworkCompletionHandler) {
@@ -85,7 +85,7 @@ public class Services {
         }
     }
     
-    func get(request: GitHubAPIRequest,
+    func get(request: Request,
              url: URL,
              overrideHeader: [String:String]? = nil,
              completionHandler: @escaping NetworkCompletionHandler) {
@@ -112,7 +112,7 @@ public class Services {
         }
     }
     
-    func host(request: GitHubAPIRequest) -> Host {
+    func host(request: Request) -> Host {
         var host: Host!
         if let hostValue = request.host?.value {
             host = .enterprise(host: hostValue)
@@ -122,7 +122,7 @@ public class Services {
         return host
     }
     
-    fileprivate func getAccessToken(request: GitHubAPIRequest,
+    fileprivate func getAccessToken(request: Request,
                                     completionHandler: @escaping GetAccessTokenCompletionHandler) {
         /*
          curl -i -X POST \
@@ -138,8 +138,11 @@ public class Services {
         
         var endpoint: EndpointFactory!
 
-        let getAccessToken = EndpointFactory.GetAccessToken(host: host(request: request),
-                                                            installationId: installationId)
+        guard let getAccessToken = try? EndpointFactory.GetAccessToken(host: host(request: request),
+                                                                       installationId: installationId) else {
+                                                                        completionHandler(nil, nil, GitHubAPIError.ParameterError)
+                                                                        return
+        }
         endpoint = EndpointFactory.endpoint(getAccessToken)
         
         let overrideHeader = [

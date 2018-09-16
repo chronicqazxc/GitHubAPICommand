@@ -10,12 +10,19 @@ import Foundation
 public protocol Endpoint {
     var httpMethod: String { get }
     var host: Host { get }
-    var orginization: String { get }
-    var repository: String { get }
     var url: String { get }
+}
+
+public protocol GitHubEndpoint: Endpoint {
     init(host: Host,
          orginization: String,
-         repository: String)
+         repository: String) throws
+}
+
+public protocol GitHubGetAccessTokenEndpoint: Endpoint {
+    var installationId: String { get }
+    init(host: Host,
+         installationId: String) throws
 }
 
 public enum EndpointFactory {
@@ -42,12 +49,8 @@ public enum EndpointFactory {
 }
 
 extension EndpointFactory {
-    struct GetAccessToken: Endpoint {
+    struct GetAccessToken: GitHubGetAccessTokenEndpoint {
         public var host: Host
-        
-        public var orginization: String
-        
-        public var repository: String
         
         public var installationId: String
         
@@ -67,20 +70,12 @@ extension EndpointFactory {
         }
         
         public init(host: Host,
-                    installationId: String) {
+                    installationId: String) throws {
+            guard host.value != "", installationId != "" else {
+                throw GitHubAPIError.ParseError
+            }
             self.host = host
-            self.orginization = ""
-            self.repository = ""
             self.installationId = installationId
-        }
-        
-        public init(host: Host,
-                    orginization: String,
-                    repository: String) {
-            self.host = host
-            self.orginization = orginization
-            self.repository = repository
-            self.installationId = ""
         }
     }
 }

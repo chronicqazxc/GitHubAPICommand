@@ -3,53 +3,45 @@ import XCTest
 
 final class GitHubAPIRequestTest: XCTestCase {
     
-    let arguments = [
-        "Action":"actionValue",
-        "Token":"tokenValue",
-        "Orginization":"orginizationValue",
-        "Repository":"repositoryValue",
-        "Host":"hostValue",
-        "InstallationID":"installationIDValue",
-        "Addition":"AdditionValue"
-    ]
-    
-    func testGitHubAPIRequestCount() {
-        let request = GitHubAPIRequest.init(arguments: arguments)
-        XCTAssertEqual(request.count, 7)
-    }
-    
-    func testGitHubAPIRequestKeyValue() {
-        let request = GitHubAPIRequest.init(arguments: arguments)
-        XCTAssertEqual(request["Addition"], "AdditionValue")
+    var request: GitHubAPIRequest {
+        let arguments = [
+            "Action":"actionValue",
+            "Token":"tokenValue",
+            "Orginization":"orginizationValue",
+            "Repository":"repositoryValue",
+            "Host":"hostValue",
+            "InstallationID":"installationIDValue",
+            "Addition":"AdditionValue"
+        ]
+        return GitHubAPIRequest(action: GitHubAPIArgument.action(arguments["Action"]!),
+                                token: GitHubAPIArgument.token(arguments["Token"]!),
+                                orginization: GitHubAPIArgument.orginization(arguments["Orginization"]!),
+                                repository: GitHubAPIArgument.repository(arguments["Repository"]!),
+                                host: GitHubAPIArgument.host(arguments["Host"]!),
+                                installationID: GitHubAPIArgument.installationID(arguments["InstallationID"]!))
     }
     
     func testGitHubAPIRequestAction() {
-        let request = GitHubAPIRequest.init(arguments: arguments)
         XCTAssertEqual(request.action?.value, "actionValue")
     }
     
     func testGitHubAPIRequestToken() {
-        let request = GitHubAPIRequest.init(arguments: arguments)
         XCTAssertEqual(request.token?.value, "tokenValue")
     }
     
     func testGitHubAPIRequestOrginization() {
-        let request = GitHubAPIRequest.init(arguments: arguments)
         XCTAssertEqual(request.orginization?.value, "orginizationValue")
     }
     
     func testGitHubAPIRequestRepository() {
-        let request = GitHubAPIRequest.init(arguments: arguments)
         XCTAssertEqual(request.repository?.value, "repositoryValue")
     }
     
     func testGitHubAPIRequestHost() {
-        let request = GitHubAPIRequest.init(arguments: arguments)
         XCTAssertEqual(request.host?.value, "hostValue")
     }
     
     func testGitHubAPIInstallationID() {
-        let request = GitHubAPIRequest.init(arguments: arguments)
         XCTAssertEqual(request.installationID?.value, "installationIDValue")
     }
 }

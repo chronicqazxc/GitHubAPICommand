@@ -33,16 +33,24 @@ final class EndpointTest: XCTestCase {
     }
     
     func testEndpointFactoryGetAccessTokenHttpMethod() {
-        
-        let factory = EndpointFactory.GetAccessToken(host: .github,
-                                                     installationId: "7")
-        XCTAssertEqual(factory.httpMethod, "POST")
+
+        do {
+            let factory = try EndpointFactory.GetAccessToken(host: .github,
+                                                             installationId: "7")
+            XCTAssertEqual(factory.httpMethod, "POST")
+        } catch {
+            XCTFail("\(error)")
+        }
     }
     
     func testEndpointFactoryGetAccessTokenUrl() {
         
-        let factory = EndpointFactory.GetAccessToken(host: .github,
-                                                      installationId: "7")
-        XCTAssertEqual(factory.url, "https://api.github.com/app/installations/7/access_tokens")
+        do {
+            let factory = try EndpointFactory.GetAccessToken(host: .github,
+                                                             installationId: "7")
+            XCTAssertEqual(factory.url, "https://api.github.com/app/installations/7/access_tokens")
+        } catch {
+            XCTFail("\(error)")
+        }
     }
 }

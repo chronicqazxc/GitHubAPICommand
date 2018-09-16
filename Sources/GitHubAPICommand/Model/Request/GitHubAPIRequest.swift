@@ -14,67 +14,46 @@ public protocol Request {
     var repository: GitHubAPIArgument? { get }
     var host: GitHubAPIArgument? { get }
     var installationID: GitHubAPIArgument? { get }
+    init(action: GitHubAPIArgument,
+         token: GitHubAPIArgument,
+         orginization: GitHubAPIArgument,
+         repository: GitHubAPIArgument,
+         host: GitHubAPIArgument,
+         installationID: GitHubAPIArgument,
+         additions: [AnyHashable: Any]?)
 }
 
 public typealias CompleteHandler = (GitHubAPIResponse?, Error?)->Void
 
 public struct GitHubAPIRequest: Request {
     
-    fileprivate let arguments: [AnyHashable: String]
+    public private(set) var action: GitHubAPIArgument?
     
-    public init(arguments: [AnyHashable: String]) {
-        self.arguments = arguments
-    }
+    public private(set) var token: GitHubAPIArgument?
     
-    public var count: Int {
-        get {
-            return arguments.keys.count
-        }
-    }
+    public private(set) var orginization: GitHubAPIArgument?
     
-    public subscript(key: String) -> String? {
-        get {
-            return arguments[key]
-        }
-    }
+    public private(set) var repository: GitHubAPIArgument?
     
-    public var action: GitHubAPIArgument? {
-        guard let actionValue = self[GitHubAPIArgumentKey.action] else {
-            return nil
-        }
-        return GitHubAPIArgument.action(actionValue)
-    }
+    public private(set) var host: GitHubAPIArgument?
     
-    public var token: GitHubAPIArgument? {
-        guard let tokenValue = self[GitHubAPIArgumentKey.token] else {
-            return nil
-        }
-        return GitHubAPIArgument.token(tokenValue)
-    }
+    public private(set) var installationID: GitHubAPIArgument?
     
-    public var orginization: GitHubAPIArgument? {
-        guard let orginizationValue = self[GitHubAPIArgumentKey.orginization] else {
-            return nil
-        }
-        return GitHubAPIArgument.orginization(orginizationValue)
-    }
+    private(set) var additions: [AnyHashable: Any]
     
-    public var repository: GitHubAPIArgument? {
-        guard let repositoryValue = self[GitHubAPIArgumentKey.repository] else {
-            return nil
-        }
-        return GitHubAPIArgument.repository(repositoryValue)
-    }
-    
-    public var host: GitHubAPIArgument? {
-        let hostValue = self[GitHubAPIArgumentKey.host]
-        return GitHubAPIArgument.host(hostValue)
-    }
-    
-    public var installationID: GitHubAPIArgument? {
-        guard let installationIDValue = self[GitHubAPIArgumentKey.installationID] else {
-            return nil
-        }
-        return GitHubAPIArgument.installationID(installationIDValue)
+    public init(action: GitHubAPIArgument,
+                token: GitHubAPIArgument,
+                orginization: GitHubAPIArgument,
+                repository: GitHubAPIArgument,
+                host: GitHubAPIArgument,
+                installationID: GitHubAPIArgument,
+                additions: [AnyHashable: Any]? = nil) {
+        self.action = action
+        self.token = token
+        self.orginization = orginization
+        self.repository = repository
+        self.host = host
+        self.installationID = installationID
+        self.additions = additions ?? [:]
     }
 }
