@@ -9,8 +9,8 @@ import Foundation
 import ObjectMapper
 
 extension Services {
-    func getLatestRelease(request: GitHubAPIRequest,
-                          completionHandler: @escaping CompletionHandler) {
+    public func getLatestRelease(request: GitHubAPIRequest,
+                                 completionHandler: @escaping CompletionHandler) {
         
         guard let orginization = request.orginization?.value,
             let repository = request.repository?.value else {

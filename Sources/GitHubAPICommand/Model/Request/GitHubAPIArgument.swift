@@ -8,12 +8,12 @@
 import Foundation
 
 public enum GitHubAPIArgumentKey {
-    static let token = "Token"
-    static let orginization = "Orginization"
-    static let repository = "Repository"
-    static let host = "Host"
-    static let installationID = "InstallationID"
-    static let action = "Action"
+    public static let token = "Token"
+    public static let orginization = "Orginization"
+    public static let repository = "Repository"
+    public static let host = "Host"
+    public static let installationID = "InstallationID"
+    public static let action = "Action"
 }
 
 public enum GitHubAPIArgument {

@@ -9,10 +9,10 @@ import Foundation
 
 extension GitHubAPIArgumentKey {
     public enum Release {
-        static let name = "ReleaseName"
-        static let body = "ReleaseBody"
-        static let tag = "ReleaseTag"
-        static let commitish = "ReleaseCommitish"
+        public static let name = "ReleaseName"
+        public static let body = "ReleaseBody"
+        public static let tag = "ReleaseTag"
+        public static let commitish = "ReleaseCommitish"
     }
 }
 
