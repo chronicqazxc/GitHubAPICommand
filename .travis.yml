@@ -12,13 +12,12 @@ language:
 - swift
 script:
 
-- #!/bin/bash
-if [[ $TRAVIS_BRANCH =~ "master" ]]; then
-    bundle exec fastlane cicd
-elif [[ $TRAVIS_BRANCH =~ "develop" ]]; then
-    bundle exec fastlane cicd
-elif [[ $TRAVIS_BRANCH =~ "release" ]]; then
-    bundle exec fastlane cicd
-else
-    bundle exec fastlane cicd
-fi
+- if [[ $TRAVIS_BRANCH =~ "master" ]]; then
+-    bundle exec fastlane cicd
+- elif [[ $TRAVIS_BRANCH =~ "develop" ]]; then
+-    bundle exec fastlane cicd
+- elif [[ $TRAVIS_BRANCH =~ "release" ]]; then
+-    bundle exec fastlane cicd
+- else
+-    bundle exec fastlane cicd
+- fi
