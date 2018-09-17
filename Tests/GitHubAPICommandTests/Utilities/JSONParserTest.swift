@@ -7,8 +7,8 @@ final class JSONParserTest: XCTestCase {
         guard let url = bundle.url(forResource: "MockData", withExtension: ".json"),
             let data = try? Data.init(contentsOf: url) else {
                 let dic = [
-                    "Foo":"Bar",
-                    "Cat":"Meow"
+                    "Foo" : "Bar",
+                    "Cat" : "Meow"
                 ]
                 do {
                     let jsonData = try JSONSerialization.data(withJSONObject: dic, options: .prettyPrinted)
