@@ -73,16 +73,18 @@ public class Services {
                 request.addValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
                 request.addValue("application/vnd.github.machine-man-preview+json", forHTTPHeaderField: "Accept")
                 
-                guard let session = strongSelf.session as? URLSession else {
-                    completionHandler(nil, nil, GitHubAPIError.getAccessTokenError)
-                    return
+                if let session = strongSelf.session as? URLSession {
+                    let task = session.dataTask(with: request) { (data, response, error) in
+                        completionHandler(data, response, error)
+                    }
+                    
+                    task.resume()
+                } else {
+                    let task = strongSelf.session.dataTask(with: request) { (data, response, error) in
+                        completionHandler(data, response, error)
+                    }
+                    task.resume()
                 }
-                
-                let task = session.dataTask(with: request) { (data, response, error) in
-                    completionHandler(data, response, error)
-                }
-                
-                task.resume()
             } catch {
                 print(error.localizedDescription)
                 completionHandler(nil, nil, error)
@@ -110,15 +112,17 @@ public class Services {
             request.addValue("token \(accessToken)", forHTTPHeaderField: "Authorization")
             request.addValue("application/vnd.github.machine-man-preview+json", forHTTPHeaderField: "Accept")
             
-            guard let session = strongSelf.session as? URLSession else {
-                completionHandler(nil, nil, GitHubAPIError.getAccessTokenError)
-                return
+            if let session = strongSelf.session as? URLSession {
+                let task = session.dataTask(with: request) { (data, response, error) in
+                    completionHandler(data, response, error)
+                }
+                task.resume()
+            } else {
+                let task = strongSelf.session.dataTask(with: request) { (data, response, error) in
+                    completionHandler(data, response, error)
+                }
+                task.resume()
             }
-            
-            let task = session.dataTask(with: request) { (data, response, error) in
-                completionHandler(data, response, error)
-            }
-            task.resume()
         }
     }
     
@@ -166,28 +170,29 @@ public class Services {
             request.addValue(arg.element.value, forHTTPHeaderField: arg.element.key)
         })
         
-        guard let session = session as? URLSession else {
-            completionHandler(nil, nil, GitHubAPIError.getAccessTokenError)
-            return
-        }
-        
-        let task = session.dataTask(with: request) { [weak self] (data, response, error) in
-            guard let strongSelft = self,
-                let data = data,
-                let jsonDic = JSONParser(data: data).parsedDictionary else {
-                    completionHandler(nil, response, error)
+        if let session = session as? URLSession {
+            let task = session.dataTask(with: request) { [weak self] (data, response, error) in
+                guard let strongSelft = self,
+                    let data = data,
+                    let jsonDic = JSONParser(data: data).parsedDictionary else {
+                        completionHandler(nil, response, error)
+                        return
+                }
+                guard let accessToken = Mapper<GitHubAccessToken>().map(JSONObject: jsonDic) else {
+                    completionHandler(data, response, error)
                     return
-            }
-            guard let accessToken = Mapper<GitHubAccessToken>().map(JSONObject: jsonDic) else {
+                }
+                
+                strongSelft.accessToken = accessToken
+                
                 completionHandler(data, response, error)
-                return
             }
-            
-            strongSelft.accessToken = accessToken
-            
-            completionHandler(data, response, error)
+            task.resume()
+        } else {
+            let task = session.dataTask(with: request) { (data, response, error) in
+                completionHandler(data, response, error)
+            }
+            task.resume()
         }
-        
-        task.resume()
     }
 }

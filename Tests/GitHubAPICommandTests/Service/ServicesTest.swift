@@ -29,6 +29,7 @@ class ServicesTests: XCTestCase {
             XCTAssert(false, "url shouldn't be nil")
             return
         }
+
         services.get(request: request, url: url) { (data, response, error) in
             XCTAssertEqual(self.session.url?.absoluteString, "http://www.google.com")
         }
