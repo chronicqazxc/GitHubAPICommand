@@ -11,4 +11,4 @@ osx_image:
 language:
 - swift
 script:
-- bundle exec fastlane cicd
+- bash scripts/cicd.sh $TRAVIS_BRANCH

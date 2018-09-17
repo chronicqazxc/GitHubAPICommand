@@ -9,8 +9,8 @@ import Foundation
 import ObjectMapper
 
 extension Services {
-    func release(request: ReleaseRequest,
-                 completionHandler: @escaping CompletionHandler) {
+    public func release(request: ReleaseRequest,
+                        completionHandler: @escaping CompletionHandler) {
         
         guard let orginization = request.orginization?.value,
             let repository = request.repository?.value else {
