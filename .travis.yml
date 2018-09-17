@@ -11,13 +11,4 @@ osx_image:
 language:
 - swift
 script:
-
-- if [[ $TRAVIS_BRANCH =~ "master" ]]; then \
--    bundle exec fastlane cicd \
-- elif [[ $TRAVIS_BRANCH =~ "develop" ]]; then \
--    bundle exec fastlane cicd \
-- elif [[ $TRAVIS_BRANCH =~ "release" ]]; then \
--    bundle exec fastlane cicd \
-- else \
--    bundle exec fastlane cicd \
-- fi
+- bash scripts/cicd.sh $TRAVIS_BRANCH
