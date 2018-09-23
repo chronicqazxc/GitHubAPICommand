@@ -9,11 +9,11 @@ import Foundation
 import ObjectMapper
 
 extension Services {
-    public func release(request: ReleaseRequest,
+    public func release(request: GitHubAPIRequestFactory.Release,
                         completionHandler: @escaping CompletionHandler) {
         
-        guard let orginization = request.orginization?.value,
-            let repository = request.repository?.value else {
+        guard let orginization = request.orginization.value,
+            let repository = request.repository.value else {
                 completionHandler(nil, nil, GitHubAPIError.ParameterError)
                 return
         }
@@ -23,14 +23,15 @@ extension Services {
                                                        orginization: orginization,
                                                        repository: repository)
             
-            guard let name = request.releaseName?.value,
-                let body = request.releaseBody?.value,
-                let tag = request.releaseTag?.value,
-                let commitish = request.releaseCommitish?.value,
-                let url = URL(string: endpoint.url) else {
+            guard let url = URL(string: endpoint.url) else {
                     completionHandler(nil, nil, GitHubAPIError.ParameterError)
                     return
             }
+            
+            let name = request.releaseName.value
+            let body = request.releaseBody.value
+            let tag = request.releaseTag.value
+            let commitish = request.releaseCommitish.value
             
             let requestBody: [AnyHashable:Any] = ["tag_name" : tag,
                                                   "target_commitish" : commitish,

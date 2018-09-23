@@ -9,11 +9,11 @@ import Foundation
 import ObjectMapper
 
 extension Services {
-    public func getLatestRelease(request: GitHubAPIRequest,
+    public func getLatestRelease(request: GitHubAPIRequestFactory.GetLatestRelease,
                                  completionHandler: @escaping CompletionHandler) {
         
-        guard let orginization = request.orginization?.value,
-            let repository = request.repository?.value else {
+        guard let orginization = request.orginization.value,
+            let repository = request.repository.value else {
                 completionHandler(nil, nil, GitHubAPIError.ParameterError)
                 return
         }
