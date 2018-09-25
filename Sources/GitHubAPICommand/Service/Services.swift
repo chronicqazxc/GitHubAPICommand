@@ -157,23 +157,17 @@ public class Services {
                 completionHandler(nil, nil, GitHubAPIError.ParameterError)
                 return
         }
-        
-        var endpoint: EndpointFactory!
 
-        guard let getAccessToken = try? EndpointFactory.GetAccessToken(host: host(request: request),
-                                                                       installationId: installationId) else {
-                                                                        completionHandler(nil, nil, GitHubAPIError.ParameterError)
-                                                                        return
-        }
-        endpoint = EndpointFactory.endpoint(getAccessToken)
-        
+        let getAccessToken = EndpointFactory.GetAccessToken(host: host(request: request),
+                                                                  installationId: installationId)
+
         let overrideHeader = [
             "Authorization" : "Bearer \(bearerToken)",
             "Accept" : "application/vnd.github.machine-man-preview+json"
         ]
         
-        var request = URLRequest(url: URL(string: endpoint.url)!)
-        request.httpMethod = endpoint.httpMethod
+        var request = URLRequest(url: URL(string: getAccessToken.url)!)
+        request.httpMethod = getAccessToken.httpMethod
         overrideHeader.enumerated().forEach({ (arg) in
             request.addValue(arg.element.value, forHTTPHeaderField: arg.element.key)
         })

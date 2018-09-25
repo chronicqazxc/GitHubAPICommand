@@ -14,7 +14,7 @@ public protocol CreateRefereneceRequest: BasicRequest {
 
 extension GitHubAPIRequestFactory {
     
-    struct CreateReference: CreateRefereneceRequest {
+    public struct CreateReference: CreateRefereneceRequest {
         
         public private(set) var orginization: GitHubAPIArgument
         
