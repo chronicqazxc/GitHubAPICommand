@@ -7,7 +7,7 @@ after_install:
 os:
 - osx
 osx_image:
-- xcode9.4.1
+- xcode10.0
 language:
 - swift
 script:

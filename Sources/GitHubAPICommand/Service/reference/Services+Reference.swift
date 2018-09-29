@@ -1,42 +1,46 @@
 //
-//  Services+Release.swift
+//  Services+Reference.swift
 //  GitHubAPICommand
 //
-//  Created by Wayne Hsiao on 2018/9/15.
+//  Created by Wayne Hsiao on 2018/9/25.
 //
 
 import Foundation
 import ObjectMapper
 
 extension Services {
-    public func release(request: GitHubAPIRequestFactory.Release,
-                        completionHandler: @escaping CompletionHandler) {
+    public func createReference(request: GitHubAPIRequestFactory.CreateReference,
+                                completionHandler: @escaping CompletionHandler) {
         
         guard let orginization = request.orginization.value,
             let repository = request.repository.value else {
                 completionHandler(nil, nil, GitHubAPIError.ParameterError)
                 return
         }
-        
+
         do {
             let endpoint = try EndpointFactory.Release(host: host(request: request),
                                                        orginization: orginization,
                                                        repository: repository)
-            
+
             guard let url = URL(string: endpoint.url) else {
-                    completionHandler(nil, nil, GitHubAPIError.ParameterError)
-                    return
+                completionHandler(nil, nil, GitHubAPIError.ParameterError)
+                return
             }
             
-            let name = request.releaseName.value
-            let body = request.releaseBody.value
-            let tag = request.releaseTag.value
-            let commitish = request.releaseCommitish.value
+            /*
+             {
+             "ref": "refs/heads/featureA",
+             "sha": "aa218f56b14c9653891f9e74264a383fa43fefbd"
+             }
+             */
             
-            let requestBody: [AnyHashable:Any] = ["tag_name" : tag,
-                                                  "target_commitish" : commitish,
-                                                  "name" : name,
-                                                  "body" : body]
+
+            let referenece = request.referenece.value
+            let sha = request.sha.value
+
+            let requestBody: [AnyHashable:Any] = ["ref" : referenece,
+                                                  "sha" : sha]
             post(url: url,
                  request: request,
                  body: requestBody) { (data, response, error) in
@@ -45,7 +49,7 @@ extension Services {
                             completionHandler(nil,response, error)
                             return
                     }
-                    guard let accessToken = Mapper<GitHubRelease>().map(JSONObject: jsonDic) else {
+                    guard let accessToken = Mapper<GitHubReference>().map(JSONObject: jsonDic) else {
                         completionHandler(nil,response, error)
                         return
                     }

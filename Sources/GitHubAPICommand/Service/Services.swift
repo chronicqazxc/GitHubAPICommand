@@ -52,7 +52,9 @@ public class Services {
               body: [AnyHashable:Any]? = nil,
               overrideHeader: [String:String]? = nil,
               completionHandler: @escaping NetworkCompletionHandler) {
-        getAccessToken(request: request) { [weak self] (data, response, error) in
+        
+        let getAccessTokenRequest = getAccessTokenRequestBy(request: request)
+        getAccessToken(request: getAccessTokenRequest) { [weak self] (data, response, error) in
             
             guard let strongSelf = self,
                 let accessToken = strongSelf.accessToken?.token,
@@ -96,7 +98,9 @@ public class Services {
              url: URL,
              overrideHeader: [String:String]? = nil,
              completionHandler: @escaping NetworkCompletionHandler) {
-        getAccessToken(request: request) { [weak self] (data, response, error) in
+        
+        let getAccessTokenRequest = getAccessTokenRequestBy(request: request)
+        getAccessToken(request: getAccessTokenRequest) { [weak self] (data, response, error) in
             
             guard let strongSelf = self,
                 let accessToken = strongSelf.accessToken?.token else {
@@ -136,7 +140,15 @@ public class Services {
         return host
     }
     
-    fileprivate func getAccessToken(request: Request,
+    func getAccessTokenRequestBy(request: Request) -> GitHubAPIRequestFactory.GetAccessToken {
+        let getAccessToken = GitHubAPIRequestFactory.GetAccessToken.init(action: request.action,
+                                                                         token: request.token,
+                                                                         host: request.host,
+                                                                         installationID: request.installationID)
+        return getAccessToken
+    }
+    
+    fileprivate func getAccessToken(request: GitHubAPIRequestFactory.GetAccessToken,
                                     completionHandler: @escaping GetAccessTokenCompletionHandler) {
         /*
          curl -i -X POST \
@@ -144,28 +156,22 @@ public class Services {
          -H "Accept: application/vnd.github.machine-man-preview+json" \
          https://api.github.com/app/installations/:installation_id/access_tokens
          */
-        guard let bearerToken = request.token?.value,
-            let installationId = request.installationID?.value else {
+        guard let bearerToken = request.token.value,
+            let installationId = request.installationID.value else {
                 completionHandler(nil, nil, GitHubAPIError.ParameterError)
                 return
         }
-        
-        var endpoint: EndpointFactory!
 
-        guard let getAccessToken = try? EndpointFactory.GetAccessToken(host: host(request: request),
-                                                                       installationId: installationId) else {
-                                                                        completionHandler(nil, nil, GitHubAPIError.ParameterError)
-                                                                        return
-        }
-        endpoint = EndpointFactory.endpoint(getAccessToken)
-        
+        let getAccessToken = EndpointFactory.GetAccessToken(host: host(request: request),
+                                                                  installationId: installationId)
+
         let overrideHeader = [
             "Authorization" : "Bearer \(bearerToken)",
             "Accept" : "application/vnd.github.machine-man-preview+json"
         ]
         
-        var request = URLRequest(url: URL(string: endpoint.url)!)
-        request.httpMethod = endpoint.httpMethod
+        var request = URLRequest(url: URL(string: getAccessToken.url)!)
+        request.httpMethod = getAccessToken.httpMethod
         overrideHeader.enumerated().forEach({ (arg) in
             request.addValue(arg.element.value, forHTTPHeaderField: arg.element.key)
         })

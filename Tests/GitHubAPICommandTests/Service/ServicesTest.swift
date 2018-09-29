@@ -5,7 +5,7 @@ class ServicesTests: XCTestCase {
     
     let session = MockURLSession()
     
-    var request: GitHubAPIRequest {
+    var request: GitHubAPIRequestFactory.GetLatestRelease {
         let arguments = [
             "Action":"actionValue",
             "Token":"tokenValue",
@@ -15,12 +15,14 @@ class ServicesTests: XCTestCase {
             "InstallationID":"installationIDValue",
             "Addition":"AdditionValue"
         ]
-        return GitHubAPIRequest(action: GitHubAPIArgument.action(arguments["Action"]!),
-                                token: GitHubAPIArgument.action(arguments["Token"]!),
-                                orginization: GitHubAPIArgument.action(arguments["Orginization"]!),
-                                repository: GitHubAPIArgument.action(arguments["Repository"]!),
-                                host: GitHubAPIArgument.action(arguments["Host"]!),
-                                installationID: GitHubAPIArgument.action(arguments["InstallationID"]!))
+        
+        return GitHubAPIRequestFactory.GetLatestRelease(
+            action: GitHubAPIArgument.action(arguments["Action"]!),
+            token: GitHubAPIArgument.action(arguments["Token"]!),
+            installationID: GitHubAPIArgument.installationID(arguments["InstallationID"]!),
+            orginization: GitHubAPIArgument.action(arguments["Orginization"]!),
+            repository: GitHubAPIArgument.action(arguments["Repository"]!),
+            host: GitHubAPIArgument.action(arguments["InstallationID"]!))
     }
     
     func testServices() {

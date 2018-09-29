@@ -28,24 +28,6 @@ public protocol GitHubGetAccessTokenEndpoint: Endpoint {
 public enum EndpointFactory {
     // https://developer.github.com/v3/apps/available-endpoints/
     // https://developer.github.com/enterprise/2.13/v3/apps/available-endpoints/
-    case endpoint(Endpoint)
-    
-    var endpoint: Endpoint {
-        get {
-            switch self {
-            case let .endpoint(endpoint):
-                return endpoint
-            }
-        }
-    }
-    
-    public var httpMethod: String {
-        return endpoint.httpMethod
-    }
-    
-    public var url: String {
-        return endpoint.url
-    }
 }
 
 extension EndpointFactory {
@@ -67,15 +49,6 @@ extension EndpointFactory {
             get {
                 return "POST"
             }
-        }
-        
-        public init(host: Host,
-                    installationId: String) throws {
-            guard host.value != "", installationId != "" else {
-                throw GitHubAPIError.ParseError
-            }
-            self.host = host
-            self.installationId = installationId
         }
     }
 }
