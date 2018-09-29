@@ -33,23 +33,17 @@ extension EndpointFactory {
         }
 
         public var host: Host {
-            get {
-                return parameters.host
-            }
+            return parameters.host
         }
         
         public var orginization: String {
-            get {
-                return parameters.orginization
-            }
+            return parameters.orginization
         }
-        
+
         public var repository: String {
-            get {
-                return parameters.repository
-            }
+            return parameters.repository
         }
-        
+
         public var url: String {
             // POST /repos/:owner/:repo/git/refs
             switch self {
@@ -70,7 +64,7 @@ extension EndpointFactory {
                 return ""
             }
         }
-        
+
         public var httpMethod: String {
             switch self {
             case .get:

@@ -16,16 +16,16 @@ public struct GitHubTagObject: GitHubAPIResponse {
     public fileprivate(set) var tagger: GitHubTagObject.GitHubTagger?
     public fileprivate(set) var object: GitHubTagObject.Object?
     public fileprivate(set) var verification: GitHubTagObject.Verification?
-    
+
     public struct GitHubTagger: GitHubAPIResponse {
         public fileprivate(set) var name: String?
         public fileprivate(set) var email: String?
         public fileprivate(set) var date: Date?
-        
+
         public init?(map: Map) {
             // NO-OP
         }
-        
+
         public mutating func mapping(map: Map) {
             name <- map["name"]
             email <- map["email"]
@@ -37,12 +37,12 @@ public struct GitHubTagObject: GitHubAPIResponse {
             }
         }
     }
-    
+
     public struct Object: GitHubAPIResponse {
         public fileprivate(set) var type: String?
         public fileprivate(set) var sha: String?
         public fileprivate(set) var url: String?
-        
+
         public init?(map: Map) {
             // NO-OP
         }
@@ -52,13 +52,13 @@ public struct GitHubTagObject: GitHubAPIResponse {
             url <- map["url"]
         }
     }
-    
+
     public struct Verification: GitHubAPIResponse {
         public fileprivate(set) var verified: Bool?
         public fileprivate(set) var reason: String?
         public fileprivate(set) var signature: String?
         public fileprivate(set) var payload: String?
-        
+
         public init?(map: Map) {
             // NO-OP
         }
@@ -69,11 +69,11 @@ public struct GitHubTagObject: GitHubAPIResponse {
             payload <- map["payload"]
         }
     }
-    
+
     public init?(map: Map) {
         // NO-OP
     }
-    
+
     public mutating func mapping(map: Map) {
         tag <- map["tag"]
         sha <- map["sha"]
