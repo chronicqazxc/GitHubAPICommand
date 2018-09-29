@@ -7,8 +7,8 @@ after_install:
 os:
 - osx
 osx_image:
-- xcode9.4.1
+- xcode10.0
 language:
 - swift
 script:
-- bundle exec fastlane cicd
+- bash scripts/cicd.sh $TRAVIS_BRANCH
