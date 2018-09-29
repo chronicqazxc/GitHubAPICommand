@@ -24,6 +24,8 @@ extension GitHubAPIRequestFactory {
         
         public private(set) var token: GitHubAPIArgument
         
+        public private(set) var installationID: GitHubAPIArgument
+        
         public private(set) var host: GitHubAPIArgument?
         
         public private(set) var referenece: GitHubAPIArgument.Reference

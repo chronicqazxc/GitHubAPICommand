@@ -52,10 +52,8 @@ public class Services {
               body: [AnyHashable:Any]? = nil,
               overrideHeader: [String:String]? = nil,
               completionHandler: @escaping NetworkCompletionHandler) {
-        guard let getAccessTokenRequest = request as? GitHubAPIRequestFactory.GetAccessToken else {
-            completionHandler(nil, nil, GitHubAPIError.ParameterError)
-            return
-        }
+        
+        let getAccessTokenRequest = getAccessTokenRequestBy(request: request)
         getAccessToken(request: getAccessTokenRequest) { [weak self] (data, response, error) in
             
             guard let strongSelf = self,
@@ -100,10 +98,8 @@ public class Services {
              url: URL,
              overrideHeader: [String:String]? = nil,
              completionHandler: @escaping NetworkCompletionHandler) {
-        guard let getAccessTokenRequest = request as? GitHubAPIRequestFactory.GetAccessToken else {
-            completionHandler(nil, nil, GitHubAPIError.ParameterError)
-            return
-        }
+        
+        let getAccessTokenRequest = getAccessTokenRequestBy(request: request)
         getAccessToken(request: getAccessTokenRequest) { [weak self] (data, response, error) in
             
             guard let strongSelf = self,
@@ -142,6 +138,14 @@ public class Services {
             host = .github
         }
         return host
+    }
+    
+    func getAccessTokenRequestBy(request: Request) -> GitHubAPIRequestFactory.GetAccessToken {
+        let getAccessToken = GitHubAPIRequestFactory.GetAccessToken.init(action: request.action,
+                                                                         token: request.token,
+                                                                         host: request.host,
+                                                                         installationID: request.installationID)
+        return getAccessToken
     }
     
     fileprivate func getAccessToken(request: GitHubAPIRequestFactory.GetAccessToken,

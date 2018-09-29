@@ -25,6 +25,8 @@ extension GitHubAPIRequestFactory {
         
         public private(set) var token: GitHubAPIArgument
         
+        public private(set) var installationID: GitHubAPIArgument
+        
         public private(set) var orginization: GitHubAPIArgument
         
         public private(set) var repository: GitHubAPIArgument
@@ -40,6 +42,8 @@ extension GitHubAPIRequestFactory {
         public private(set) var repository: GitHubAPIArgument
         
         public private(set) var token: GitHubAPIArgument
+        
+        public private(set) var installationID: GitHubAPIArgument
         
         public private(set) var host: GitHubAPIArgument?
         

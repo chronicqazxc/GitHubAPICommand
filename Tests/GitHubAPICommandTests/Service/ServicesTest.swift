@@ -19,6 +19,7 @@ class ServicesTests: XCTestCase {
         return GitHubAPIRequestFactory.GetLatestRelease(
             action: GitHubAPIArgument.action(arguments["Action"]!),
             token: GitHubAPIArgument.action(arguments["Token"]!),
+            installationID: GitHubAPIArgument.installationID(arguments["InstallationID"]!),
             orginization: GitHubAPIArgument.action(arguments["Orginization"]!),
             repository: GitHubAPIArgument.action(arguments["Repository"]!),
             host: GitHubAPIArgument.action(arguments["InstallationID"]!))

@@ -11,7 +11,8 @@ final class GitHubAPIRequest_ReferenceTest: XCTestCase {
             "Repository":"repositoryValue",
             "Host":"hostValue",
             "Reference":"referenceValue",
-            "Sha":"shaValue"
+            "Sha":"shaValue",
+            "InstallationID":"InstallationIDValue"
         ]
         
         return GitHubAPIRequestFactory.CreateReference(
@@ -19,6 +20,7 @@ final class GitHubAPIRequest_ReferenceTest: XCTestCase {
             repository: GitHubAPIArgument.repository(arguments["Repository"]!),
             action: GitHubAPIArgument.action(arguments["Action"]!),
             token: GitHubAPIArgument.token(arguments["Token"]!),
+            installationID: GitHubAPIArgument.installationID(arguments["InstallationID"]!),
             host: GitHubAPIArgument.host(arguments["Host"]!),
             referenece: GitHubAPIArgument.Reference.referenece(arguments["Reference"]!),
             sha: GitHubAPIArgument.Reference.sha(arguments["Sha"]!))

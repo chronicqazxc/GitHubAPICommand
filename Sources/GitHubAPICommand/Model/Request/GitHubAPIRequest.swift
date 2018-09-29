@@ -11,6 +11,7 @@ public protocol Request {
     var action: GitHubAPIArgument { get }
     var token: GitHubAPIArgument { get }
     var host: GitHubAPIArgument? { get }
+    var installationID: GitHubAPIArgument { get }
 }
 
 public protocol BasicRequest: Request {

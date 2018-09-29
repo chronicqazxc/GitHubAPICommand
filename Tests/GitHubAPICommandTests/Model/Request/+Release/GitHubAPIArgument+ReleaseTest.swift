@@ -23,6 +23,7 @@ final class GitHubAPIRequest_ReleaseTest: XCTestCase {
             orginization: GitHubAPIArgument.orginization(arguments["Orginization"]!),
             repository: GitHubAPIArgument.repository(arguments["Repository"]!),
             token: GitHubAPIArgument.token(arguments["Token"]!),
+            installationID: GitHubAPIArgument.installationID(arguments["InstallationID"]!),
             host: GitHubAPIArgument.host(arguments["Host"]!),
             releaseName: GitHubAPIArgument.Release.name(arguments["ReleaseName"]!),
             releaseBody: GitHubAPIArgument.Release.body(arguments["ReleaseBody"]!),

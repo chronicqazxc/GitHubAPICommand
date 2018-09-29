@@ -12,7 +12,7 @@ let package = Package(
             targets: ["GitHubAPICommand"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/Hearst-DD/ObjectMapper.git", .exact("2.2.6")),
+    .package(url: "https://github.com/Hearst-DD/ObjectMapper.git", from: "3.3.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
