@@ -31,5 +31,15 @@ public struct GitHubAPIRequestFactory {
         public private(set) var host: GitHubAPIArgument?
         
         public private(set) var installationID: GitHubAPIArgument
+        
+        public init(action: GitHubAPIArgument,
+                    token: GitHubAPIArgument,
+                    host: GitHubAPIArgument? = nil,
+                    installationID: GitHubAPIArgument) {
+            self.action = action
+            self.token = token
+            self.host = host
+            self.installationID = installationID
+        }
     }
 }

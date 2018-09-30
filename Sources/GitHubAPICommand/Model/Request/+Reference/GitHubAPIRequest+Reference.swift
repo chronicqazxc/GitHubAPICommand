@@ -13,7 +13,7 @@ public protocol CreateRefereneceRequest: BasicRequest {
 }
 
 extension GitHubAPIRequestFactory {
-    
+
     public struct CreateReference: CreateRefereneceRequest {
         
         public private(set) var orginization: GitHubAPIArgument
@@ -31,6 +31,24 @@ extension GitHubAPIRequestFactory {
         public private(set) var referenece: GitHubAPIArgument.Reference
         
         public private(set) var sha: GitHubAPIArgument.Reference
+        
+        public init(orginization: GitHubAPIArgument,
+                    repository: GitHubAPIArgument,
+                    action: GitHubAPIArgument,
+                    token: GitHubAPIArgument,
+                    installationID: GitHubAPIArgument,
+                    host: GitHubAPIArgument? = nil,
+                    referenece: GitHubAPIArgument.Reference,
+                    sha: GitHubAPIArgument.Reference) {
+            self.orginization = orginization
+            self.repository = repository
+            self.action = action
+            self.token = token
+            self.installationID = installationID
+            self.host = host
+            self.referenece = referenece
+            self.sha = sha
+        }
     }
 }
 

@@ -42,6 +42,7 @@ public class Services {
     
     fileprivate var accessToken: GitHubAccessToken?
     let session: URLSessionProtocol
+    public static var shared = Services()
     
     public init(session: URLSessionProtocol = URLSession.shared) {
         self.session = session
