@@ -18,8 +18,6 @@ extension Services {
             switch self {
             case let .Create(request, completionHandler):
                 create(request: request, completionHandler: completionHandler)
-            default:
-                break
             }
         }
     }
